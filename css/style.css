@@ -189,7 +189,10 @@ td:link {
   }
   .lives {
     position: fixed;
-    top: 220px;
+    top: 230px;
     left: 20px;
+  }
+  .footer{
+    padding: 20px;
   }
 }
