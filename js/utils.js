@@ -2,11 +2,43 @@
 console.log('utils!');
 
 
+
+
+
+
+
 function renderCell(locationI,locationJ, value) {
     // Select the elCell and set the value
     var elCell = document.querySelector(`#cell-${locationI}-${locationJ}`);
     elCell.innerText = value;
+    elCell.style.backgroundColor = "#e3d23f"; //change the bgc of the value
   }
+
+//Timer:
+function setTime()
+{
+  var minutesLabel = document.getElementById("minutes");
+  var secondsLabel = document.getElementById("seconds");
+    ++gGame.secsPassed;
+    secondsLabel.innerHTML = strTime(gGame.secsPassed%60);
+    minutesLabel.innerHTML = strTime(parseInt(gGame.secsPassed/60));
+    // if(gGame.secsPassed === 0){
+    //   secondsLabel.innerText = '00';
+    // minutesLabel.innerText = '00';
+    // }
+}
+function strTime(val)
+{
+    var valString = val + "";
+    if(valString.length < 2)
+    {
+        return "0" + valString;
+    }
+    else
+    {
+        return valString;
+    }
+}
 
 function getRandomInt(min, max) {
     min = Math.ceil(min);

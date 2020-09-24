@@ -4,14 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <title>Minesweeper Game</title>
 </head>
 <body onload="initGame()">
-    <h1>this is the game!</h1>
+    <div class="header"><h1>minesweeper game</h1><hr/>
+    <button class="buttons" onclick="chooseLevel(this)">Easy</button>
+    <button class="buttons" onclick="chooseLevel(this)">Medium</button>
+    <button class="buttons" onclick="chooseLevel(this)">Hard</button>
+    <div class="main timer"> time:<label id="minutes">00</label>:<label id="seconds">00</label></div>
+    <div class="main bombs">you have: <span>2</span> 💣 </div>
+    <div class="main lives">lives:<span>❤️❤️❤️</span></div>
+    <div class="smiley"  onclick="iconRest(this)">😃</div>
+    </div>
+    
     <div class="game-container">
     
     </div>
+    <div class="footer">© guy indepurker 2020</div>
 <script src="js/utils.js"></script>
     <script src="js/game.js"></script>
 </body>

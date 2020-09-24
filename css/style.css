@@ -1,18 +1,124 @@
-body{
-    font-size: 20px;
-    text-align: center;
+body {
+  font-size: 20px;
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  background-color: rgb(250, 250, 210);
+  margin: 0;
+  padding: 0;
+}
+hr {
+  border: 0;
+  border-top: 6px dotted #fffcaa;
+  width: 20%;
 }
 table {
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid black;
+  font-family: "Courier New", Courier, monospace;
+  background-color: #ffffe0;
+  margin-top: 250px;
+  margin-bottom: 15%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid rgb(169, 169, 169);
 }
-td{
-    border: 1px solid black;
-    background-color: rgb(174, 172, 172);
-    width: 20px;
-    height: 20px;
+td {
+  border: 1px solid rgb(162, 162, 162);
+  background-color: #ffffe0;
+  width: 40px;
+  height: 40px;
 }
-td:hover{
-    cursor: pointer;
+td:hover {
+  cursor: pointer;
+  background-color: rgb(232, 230, 178);
+}
+td:link {
+  background-color: aqua;
+}
+
+.header {
+  position: fixed;
+  top: 0px;
+  /* background-image: linear-gradient(to bottom, #ffffe0, #f6f6d5, #ececca, #e3e3c0, #dadab5); */
+  background-color: bisque;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #e9e2a3;
+  width: 100%;
+  /* padding-top: 20px;
+    padding-bottom:30px;
+    display: block; */
+}
+.header h1 {
+  color: rgb(206, 194, 85);
+  font-size: 30px;
+  letter-spacing: 1px;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: bolder;
+  margin-top: 10px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  text-transform: capitalize;
+  /* margin-bottom: 10px; */
+  margin: 0;
+}
+
+.header .buttons {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: lighter;
+  transition-duration: 0.4s;
+  margin: 10px;
+  background-color: white;
+  color: #555555;
+  border-color: #555555;
+  border-radius: 12px;
+  font-size: 8px;
+  text-transform: capitalize;
+  letter-spacing: 2px;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.header .buttons:hover {
+  background-color: #555555;
+  color: white;
+  cursor: pointer;
+}
+.header .main {
+  text-transform: capitalize;
+  letter-spacing: 1px;
+  font-weight: bold;
+  /* padding: 20px; */
+  /* margin-bottom: 10px; */
+  display: block;
+}
+.timer {
+  position: absolute;
+  right: 20px;
+  border: 2px solid black;
+  padding: 5px;
+  border-radius: 15px;
+}
+.bombs {
+  position: absolute;
+  left: 20px;
+}
+.smiley{
+  display: block;
+  margin-bottom: 5px;
+  padding-top: 5px;
+}
+.smiley:hover{
+  cursor: pointer;
+
+}
+.footer {
+  font-size: 10px;
+  color: white;
+  background-color: rgb(240, 230, 140);
+  text-transform: capitalize;
+  letter-spacing: 2px;
+  position: fixed;
+  bottom: 0px;
+  padding: 20px;
+  width: 100%;
 }
