@@ -6,6 +6,12 @@ function renderCell(locationI, locationJ, value) {
   elCell.innerText = value;
   elCell.style.backgroundColor = "#e3d23f"; //change the bgc of the value
 }
+function renderEmptyCell(locationI, locationJ, value){
+  var elCell = document.querySelector(`#cell-${locationI}-${locationJ}`);
+  elCell.innerText = value;
+  elCell.className = "back-empty";
+
+}
 
 //Timer:
 function setTime() {

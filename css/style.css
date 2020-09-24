@@ -1,7 +1,8 @@
+/* Html tags */
 body {
   font-size: 20px;
   text-align: center;
-  font-family: "Roboto", sans-serif;
+  font-family: "Ubuntu", sans-serif;
   background-color: rgb(250, 250, 210);
   margin: 0;
   padding: 0;
@@ -14,7 +15,7 @@ hr {
 table {
   font-family: "Courier New", Courier, monospace;
   background-color: #ffffe0;
-  margin-top: 290px;
+  margin-top: 300px;
   margin-bottom: 15%;
   margin-left: auto;
   margin-right: auto;
@@ -33,7 +34,7 @@ td:hover {
 td:link {
   background-color: aqua;
 }
-
+/* SELECTOR TAGS */
 .header {
   position: fixed;
   top: 0px;
@@ -41,13 +42,13 @@ td:link {
   margin-bottom: 10px;
   border-bottom: 2px solid #e9e2a3;
   width: 100%;
-
 }
 .header h1 {
-  color: rgb(200, 211, 129);
-  font-size: 30px;
-  letter-spacing: 1px;
-  font-family: "Ubuntu", sans-serif;
+  color: rgb(79, 75, 53);
+  text-shadow: -1px 0 #555555, 0 1px #555555, 1px 0 #555555, 0 -1px #555555;
+  font-size: 40px;
+  letter-spacing: 5px;
+  font-family: "Fjalla One", sans-serif;
   font-weight: bolder;
   margin-top: 10px;
   padding-top: 20px;
@@ -55,7 +56,7 @@ td:link {
   text-transform: capitalize;
   margin: 0;
 }
-
+/* BUTTONS  */
 .header .buttons {
   font-family: "Ubuntu", sans-serif;
   font-weight: lighter;
@@ -79,40 +80,58 @@ td:link {
   color: white;
   cursor: pointer;
 }
+/* SELECTORS HEADER AFTER BUTTONS */
 .header .main {
+  text-shadow: -1px 0 lightcyan, 0 1px lightcyan, 1px 0 lightcyan,
+    0 -1px lightcyan;
+  font-family: "Courier New", Courier, monospace;
   text-transform: capitalize;
   letter-spacing: 1px;
-  font-weight: bold;
+  font-weight: 600;
   display: block;
 }
 .timer {
+  text-shadow: none !important;
+  display: inline-block;
   position: absolute;
   right: 20px;
-  border: 2px solid black;
+  border: 1px solid rgb(129, 130, 125);
   padding: 5px;
+  font-weight: lighter !important;
   border-radius: 15px;
 }
+.lives {
+  position: relative;
+}
 .bombs {
+  display: inline-block;
+
   position: absolute;
   left: 20px;
 }
-.smiley{
+.smiley {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 30px;
   display: block;
   margin-bottom: 5px;
   padding-top: 5px;
 }
-.smiley:hover{
+.smiley:hover {
   cursor: pointer;
-
 }
-.victory{
+.lives {
+  padding: 5px;
+}
+/* VICTORY GAME */
+.victory {
   display: none;
   padding: 5px;
   width: 20%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 5px;
-  font-family: "Ubuntu", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: lighter;
   font-size: 20px;
   border-radius: 12px;
@@ -122,18 +141,55 @@ td:link {
   letter-spacing: 2px;
 }
 .victory:hover {
-background-color: #555555;
-border-color: white;
-color: white;
+  cursor: pointer;
+  background-color: #555555;
+  border-color: white;
+  color: white;
 }
+/* FOOTER  */
 .footer {
   font-size: 10px;
-  color: white;
-  background-color: rgb(240, 230, 140);
+  color: #f4efefad;
+  font-weight: 300;
+  background-color: rgb(67 67 62);
   text-transform: capitalize;
   letter-spacing: 2px;
   position: fixed;
   bottom: 0px;
-  padding: 20px;
+  padding: 30px;
   width: 100%;
+}
+.back-empty {
+  background-color: #ffffe0;
+  transition-duration: 0.4s;
+}
+
+.footer a {
+  text-decoration: none;
+  color: #fff;
+  transition-duration: 0.4s;
+}
+.footer a:hover {
+  color: #dcd5d5ad;
+  font-size: 15px;
+}
+::selection {
+  background: rgb(228, 225, 118);
+}
+/* Responsive Features */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  .main {
+    font-size: 15px;
+    font-weight: 600;
+    display: inline;
+    padding: 3px;
+  }
+  .header {
+    margin-bottom: 10px;
+  }
+  .lives {
+    position: fixed;
+    top: 220px;
+    left: 20px;
+  }
 }

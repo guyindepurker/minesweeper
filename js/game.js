@@ -3,6 +3,14 @@
 const FLAG = "🚩";
 const MINE = "💣";
 const EMPTY = " ";
+const WIENER = "😎";
+const NORMAL = "😃";
+const RESTART = "🤪";
+const LOSE = "😭";
+const HEART = "💛";
+const LASTHEART = "💔";
+const GAMEOVER = "❌";
+
 var gBoard;
 var gGame = {
   isOn: false,
@@ -13,7 +21,7 @@ var gGame = {
 var gLevel = {
   SIZE: 4,
   MINES: 2,
-  LIVES:1
+  LIVES: 1,
 };
 var gTimeInterval = null;
 
@@ -29,8 +37,6 @@ function chooseLevel(elBtn) {
       MINES: 2,
       LIVES: 1,
     };
-    elBombs.innerText = gLevel.MINES;
-    elLives.innerText = "❤️";
     initGame();
   } else if (text === "Medium") {
     gLevel = {
@@ -38,8 +44,6 @@ function chooseLevel(elBtn) {
       MINES: 12,
       LIVES: 3,
     };
-    elLives.innerText = "❤️❤️❤️";
-    elBombs.innerText = gLevel.MINES;
     initGame();
   } else if (text === "Hard") {
     gLevel = {
@@ -47,10 +51,28 @@ function chooseLevel(elBtn) {
       MINES: 30,
       LIVES: 3,
     };
-    elLives.innerText = "❤️❤️❤️";
-    elBombs.innerText = gLevel.MINES;
+
     initGame();
   }
+  var harts;
+  var numBomb;
+  switch (gLevel.MINES) {
+    case 2:
+      harts = HEART;
+      numBomb = 2;
+      break;
+    case 12:
+      harts = HEART + HEART + HEART;
+      numBomb = 12;
+      break;
+    case 30:
+      harts = HEART + HEART + HEART;
+      numBomb = 30;
+      break;
+  }
+  elLives.innerText = harts;
+  elBombs.innerText = numBomb;
+  document.querySelector(".smiley").innerText = NORMAL; //RESET THE SMILEY
 }
 
 //Starting the Game:
@@ -68,7 +90,7 @@ function initGame() {
   };
 }
 
-//Rander the Board:
+//Render the Board:
 
 function renderBoard(board) {
   var htmlStr = "<table><tbody>";
@@ -114,7 +136,8 @@ function buildBoard(level) {
   return board;
 }
 
-//Set Negs:
+//Set Mines Negs Count:
+
 function setMinesNegsCount(board) {
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
@@ -149,7 +172,7 @@ function createMines(board, level) {
   }
 }
 
-//Random Locations:
+//Random Locations for mines in the board:
 function randomMines(board) {
   var emptyCellRandom = [];
   for (var i = 0; i < board.length; i++) {
@@ -171,17 +194,21 @@ function cellClicked(elCell, i, j) {
   var value = EMPTY;
   if (currCell.isShown) return;
   if (currCell.isMarked) return;
-  if (gGame.shownCount === 0 && gGame.isOn)
+  if (gGame.shownCount === 0 && gGame.isOn) {
     gTimeInterval = setInterval(setTime, 100);
+  }
   if (currCell.minesAroundCount === 0 && !currCell.isMine) {
     currCell.isShown = true;
     gGame.shownCount++;
-    expandShown(gBoard, elCell, i, j);
+    expandShown(gBoard, i, j);
   }
   //update the dom:
   elCell.style.backgroundColor = "#e3d23f	";
-  //update the modal:
+
+  ////////////If else conditions!!!//////
+
   if (!currCell.isMine && currCell.minesAroundCount > 0) {
+    //update the modal:
     currCell.isShown = true;
     value = currCell.minesAroundCount;
     gGame.shownCount++;
@@ -189,15 +216,20 @@ function cellClicked(elCell, i, j) {
     currCell.isShown = true;
     gGame.shownCount++;
     value = MINE;
+    //Update the Lives dom and modal!! :
     gLevel.LIVES--;
-    if (gLevel.LIVES === 2) elLives.innerText = "❤️❤️";
-    else if (gLevel.LIVES === 1) elLives.innerText = "❤️";
-    else if (gLevel.LIVES === 0) elLives.innerText = "Last Try";
-    else if (gLevel.LIVES < 0) {
-      document.querySelector(".lives span").innerText ='END GAME';
+    if (gLevel.LIVES === 2) {
+      elLives.innerText = HEART + HEART;
+    } else if (gLevel.LIVES === 1) {
+      elLives.innerText = HEART;
+    } else if (gLevel.LIVES === 0) {
+      elLives.innerText = LASTHEART;
+    } else if (gLevel.LIVES < 0) {
+      elLives.innerText = GAMEOVER;
       stopGame(gBoard);
     }
   }
+  //update the dom
   renderCell(i, j, value);
   checkGameOver();
 }
@@ -219,9 +251,9 @@ function cellMarked(elCell, i, j, eve) {
   checkGameOver();
 }
 
-//Show if the cell is 0 see the other cell
+//Show if the cell is 0 see the other cells around
 
-function expandShown(board, elCell, rowIdx, collJdx) {
+function expandShown(board, rowIdx, collJdx) {
   var value = EMPTY;
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
     if (i < 0 || i >= board.length) continue;
@@ -233,7 +265,6 @@ function expandShown(board, elCell, rowIdx, collJdx) {
       gGame.shownCount++; //update the gGame
       currCell.isShown = true; //update the modal
       if (currCell.minesAroundCount > 0) {
-        elCell.style.backgroundColor = "#e3d23f	"; //update the dom
         value = currCell.minesAroundCount;
       }
 
@@ -251,12 +282,12 @@ function checkGameOver() {
   if (gGame.markedCount === gLevel.MINES && sizeBoardWin === gGame.shownCount) {
     gGame.isOn = false;
     clearInterval(gTimeInterval);
-    elSmiley.innerText = "😎";
+    elSmiley.innerText = WIENER;
     document.querySelector(".victory").style.display = "block";
   }
 }
 
-//Loose the game
+//Loose the game and show mine
 
 function stopGame(board) {
   for (var i = 0; i < board.length; i++) {
@@ -270,15 +301,25 @@ function stopGame(board) {
   }
   clearInterval(gTimeInterval);
   gGame.isOn = false;
-  document.querySelector(".smiley").innerText = "😭";
+  document.querySelector(".smiley").innerText = LOSE;
 }
 
 //Restart the Game
 function iconRest(elIcon) {
+  var harts;
+  switch (gLevel.SIZE) {
+    case 4:
+      harts = HEART;
+      break;
+    default:
+      harts = HEART + HEART + HEART;
+      break;
+  }
+  document.querySelector(".lives span").innerText = harts;
   clearInterval(gTimeInterval);
-  elIcon.innerText = "🤪";
+  elIcon.innerText = RESTART;
   setTimeout(function () {
-    elIcon.innerText = "😃";
+    elIcon.innerText = NORMAL;
   }, 100);
   initGame();
 }
