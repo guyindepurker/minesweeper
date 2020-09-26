@@ -15,7 +15,7 @@ hr {
 table {
   font-family: "Courier New", Courier, monospace;
   background-color: #ffffe0;
-  margin-top: 300px;
+  margin-top: 350px;
   margin-bottom: 15%;
   margin-left: auto;
   margin-right: auto;
@@ -112,9 +112,9 @@ td:link {
 }
 .smiley {
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 50%;
   font-size: 30px;
-  display: block;
+  float: right;
   margin-bottom: 5px;
   padding-top: 5px;
 }
@@ -131,6 +131,7 @@ td:link {
   width: 20%;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 42px;
   margin-bottom: 5px;
   font-family: "Open Sans", sans-serif;
   font-weight: lighter;
@@ -147,8 +148,17 @@ td:link {
   border-color: white;
   color: white;
 }
-.shown{
+.shown {
   background-color: #e3d23f;
+}
+.safeClick {
+  background-color: rgb(228, 225, 225);
+}
+.safe-click {
+  font-size: 13px !important;
+  background-color: rgb(230, 233, 64) !important;
+  font-weight: bold !important;
+  float: left;
 }
 /* FOOTER  */
 .footer {
@@ -160,7 +170,6 @@ td:link {
   letter-spacing: 2px;
   position: fixed;
   bottom: 0px;
-
   padding: 30px;
   width: 100%;
 }
@@ -197,7 +206,7 @@ td:link {
     top: 230px;
     left: 20px;
   }
-  .footer{
+  .footer {
     padding: 20px;
   }
 }

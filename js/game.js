@@ -3,7 +3,7 @@
 const FLAG = "🚩";
 const MINE = "💣";
 const EMPTY = " ";
-const WIENER = "😎";
+const WINNER = "😎";
 const NORMAL = "😃";
 const RESTART = "🤪";
 const LOSE = "😭";
@@ -11,25 +11,18 @@ const HEART = "💛";
 const GAMEOVER = "❌";
 
 var gBoard;
-var gGame = {
-  isOn: false,
-  isFirstClick: true,
-  shownCount: 0,
-  markedCount: 0,
-  secsPassed: 0,
-};
+var gGame;
+var gTimeInterval = null;
 var gLevel = {
+  //default mode!
   SIZE: 4,
   MINES: 2,
   LIVES: 2,
 };
-var gTimeInterval = null;
 
 //Choose a Level:
 
 function chooseLevel(elBtn) {
-  var elBombs = document.querySelector(".bombs span");
-  var elLives = document.querySelector(".lives span");
   var text = elBtn.innerText;
   if (text === "Easy") {
     gLevel = {
@@ -37,42 +30,20 @@ function chooseLevel(elBtn) {
       MINES: 2,
       LIVES: 2,
     };
-    initGame();
   } else if (text === "Medium") {
     gLevel = {
       SIZE: 8,
       MINES: 12,
       LIVES: 3,
     };
-    initGame();
   } else if (text === "Hard") {
     gLevel = {
       SIZE: 12,
       MINES: 30,
       LIVES: 3,
     };
-
-    initGame();
   }
-  var harts;
-  var numBomb;
-  switch (gLevel.MINES) {
-    case 2:
-      harts = HEART + HEART;
-      numBomb = 2;
-      break;
-    case 12:
-      harts = HEART + HEART + HEART;
-      numBomb = 12;
-      break;
-    case 30:
-      harts = HEART + HEART + HEART;
-      numBomb = 30;
-      break;
-  }
-  elLives.innerText = harts;
-  elBombs.innerText = numBomb;
-  document.querySelector(".smiley").innerText = NORMAL; //RESET THE SMILEY
+  initGame();
 }
 
 //Starting the Game:
@@ -83,15 +54,18 @@ function initGame() {
   setMinesNegsCount(gBoard);
   renderBoard(gBoard);
   gGame = {
-    isOn: true,
+    isOn: false,
     isFirstClick: true,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
+    safeClick: 3,
   };
+  gLevel.LIVES = 3;
   countMarked();
-  document.querySelector(".victory").style.display = "none";
-  resetTimerHtml();
+  countSafeClick();
+  updateHtmInnerText()
+
 }
 
 //Render the Board:
@@ -164,6 +138,22 @@ function countNegs(rowIdx, collJdx) {
   }
   return count;
 }
+// SAFE CLICK BONUS!!!!!!!!!!
+function showSafeLocation() {
+  if (gGame.safeClick === 0 || !gGame.isOn) return;
+  var randomLocations = randomEmptyLocations(gBoard).slice();
+  for (var i = 0; i < gGame.safeClick; i++) {
+    var idx = getRandomInt(0, randomLocations.length);
+    var currLocation = randomLocations[idx];
+    if (gBoard[currLocation.i][currLocation.j].isShown) continue;
+    randomLocations.splice(idx, 1);
+  }
+  renderSafeClick(currLocation.i, currLocation.j);
+  gGame.safeClick--;
+  countSafeClick();
+}
+
+//SAFE CLICK BONUS END!!!!!!!
 
 //Crate Mines in Random Locations
 function createMines(board, level) {
@@ -182,7 +172,7 @@ function randomEmptyLocations(board) {
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
       var currCell = board[i][j];
-      if (!currCell.isMine) {
+      if (!currCell.isMine && !currCell.isShown) {
         emptyCellRandom.push({ i: i, j: j });
       }
     }
@@ -192,18 +182,19 @@ function randomEmptyLocations(board) {
 
 //Cell Clicked:
 function cellClicked(elCell, i, j) {
-  if (!gGame.isOn) return;
   var currCell = gBoard[i][j];
   var value = EMPTY;
   if (currCell.isShown) return;
   if (currCell.isMarked) return;
-  if (gGame.shownCount === 0 && gGame.isOn && gGame.isFirstClick) {
+  if (gGame.shownCount === 0 && !gGame.isOn && gGame.isFirstClick) {
+    gGame.isOn = true;
     gTimeInterval = setInterval(setTime, 100);
     if (currCell.isMine) {
       firstClick(gBoard, i, j);
     }
     gGame.isFirstClick = false;
   }
+  if (!gGame.isOn) return;
   if (currCell.minesAroundCount === 0 && !currCell.isMine) {
     currCell.isShown = true;
     gGame.shownCount++;
@@ -218,7 +209,7 @@ function cellClicked(elCell, i, j) {
     currCell.isShown = true;
     gGame.shownCount++;
     value = MINE;
-    //Update the Lives dom and modal!! :
+    //Update the Lives dom and modal and check loosing!! :
     gLevel.LIVES--;
     lives(i, j, elCell, currCell);
   }
@@ -246,8 +237,7 @@ function cellMarked(elCell, i, j, eve) {
   checkGameOver();
 }
 
-//Show if the cell is 0 see the other cells around
-
+//Show if the cell is 0 see the others cells around
 function expandShown(board, rowIdx, collJdx) {
   var value = EMPTY;
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
@@ -269,7 +259,6 @@ function expandShown(board, rowIdx, collJdx) {
 }
 
 //Check victory
-
 function checkGameOver() {
   var elSmiley = document.querySelector(".smiley");
   var sizeBoardWin = Math.pow(gLevel.SIZE, 2);
@@ -277,30 +266,27 @@ function checkGameOver() {
   if (gGame.markedCount === gLevel.MINES && sizeBoardWin === gGame.shownCount) {
     gGame.isOn = false;
     clearInterval(gTimeInterval);
-    elSmiley.innerText = WIENER;
+    elSmiley.innerText = WINNER;
     document.querySelector(".victory").style.display = "block";
   }
 }
 
-//Loose the game
+//Loose the game and lives
 function lives(i, j, elCell, currCell) {
   var elLives = document.querySelector(".lives span");
+  var cellBack = setTimeout(function () {
+    renderCell(i, j, EMPTY);
+    elCell.classList.remove("shown");
+    currCell.isShown = false;
+    gGame.shownCount--;
+  }, 1000);
+
   if (gLevel.LIVES === 2) {
     elLives.innerText = HEART + HEART;
-    setTimeout(function () {
-      renderCell(i, j, EMPTY);
-      elCell.classList.remove("shown");
-      currCell.isShown = false;
-      gGame.shownCount--;
-    }, 1000);
+    cellBack;
   } else if (gLevel.LIVES === 1) {
     elLives.innerText = HEART;
-    setTimeout(function () {
-      renderCell(i, j, EMPTY);
-      elCell.classList.remove("shown");
-      currCell.isShown = false;
-      gGame.shownCount--;
-    }, 1000);
+    cellBack;
   } else if (gLevel.LIVES <= 0) {
     elLives.innerText = GAMEOVER;
     stopGame(gBoard);
@@ -322,16 +308,7 @@ function stopGame(board) {
   document.querySelector(".smiley").innerText = LOSE; //change the smiley icon
 }
 
-function countMarked() {
-  var elMark = document.querySelector(".marked span");
-  elMark.innerText = gGame.markedCount;
-}
-function resetTimerHtml() {
-  var minutesLabel = document.getElementById("minutes");
-  var secondsLabel = document.getElementById("seconds");
-  secondsLabel.innerHTML = "00";
-  minutesLabel.innerHTML = "00";
-}
+
 //First Click:
 function firstClick(board, rowIdx, collJdx) {
   var currCell = board[rowIdx][collJdx];
@@ -348,20 +325,54 @@ function firstClick(board, rowIdx, collJdx) {
 
 //Restart the Game
 function iconRest(elIcon) {
-  var harts;
-  switch (gLevel.SIZE) {
-    case 4:
-      harts = HEART + HEART;
-      break;
-    default:
-      harts = HEART + HEART + HEART;
-      break;
-  }
-  document.querySelector(".lives span").innerText = harts;
+  updateHtmInnerText();
   clearInterval(gTimeInterval);
   elIcon.innerText = RESTART;
   setTimeout(function () {
     elIcon.innerText = NORMAL;
   }, 100);
   initGame();
+}
+
+//update innerHtml functions!:
+function updateHtmInnerText() {
+  var elBombs = document.querySelector(".bombs span");
+  var elLives = document.querySelector(".lives span");
+  var harts;
+  var numBombs;
+  switch (gLevel.MINES) {
+    case 2:
+      harts = HEART + HEART;
+      numBombs = 2;
+      break;
+    case 12:
+      harts = HEART + HEART + HEART;
+      numBombs = 12;
+      break;
+    case 30:
+      harts = HEART + HEART + HEART;
+      numBombs = 30;
+      break;
+  }
+  elLives.innerText = harts;
+  elBombs.innerText = numBombs;
+  document.querySelector(".smiley").innerText = NORMAL; //RESET THE SMILEY
+  document.querySelector(".victory").style.display = "none";
+  resetTimerHtml();
+}
+
+function countMarked() {
+  var elMark = document.querySelector(".marked span");
+  elMark.innerText = gGame.markedCount;
+}
+function countSafeClick() {
+  var elSafeClick = document.querySelector(".safe-click span");
+  elSafeClick.innerText = gGame.safeClick;
+}
+
+function resetTimerHtml() {
+  var minutesLabel = document.getElementById("minutes");
+  var secondsLabel = document.getElementById("seconds");
+  secondsLabel.innerHTML = "00";
+  minutesLabel.innerHTML = "00";
 }
