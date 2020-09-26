@@ -274,19 +274,22 @@ function checkGameOver() {
 //Loose the game and lives
 function lives(i, j, elCell, currCell) {
   var elLives = document.querySelector(".lives span");
-  var cellBack = setTimeout(function () {
-    renderCell(i, j, EMPTY);
-    elCell.classList.remove("shown");
-    currCell.isShown = false;
-    gGame.shownCount--;
-  }, 1000);
-
   if (gLevel.LIVES === 2) {
     elLives.innerText = HEART + HEART;
-    cellBack;
+    setTimeout(function () {
+      renderCell(i, j, EMPTY);
+      elCell.classList.remove("shown");
+      currCell.isShown = false;
+      gGame.shownCount--;
+    }, 1000);
   } else if (gLevel.LIVES === 1) {
     elLives.innerText = HEART;
-    cellBack;
+    setTimeout(function () {
+      renderCell(i, j, EMPTY);
+      elCell.classList.remove("shown");
+      currCell.isShown = false;
+      gGame.shownCount--;
+    }, 1000);
   } else if (gLevel.LIVES <= 0) {
     elLives.innerText = GAMEOVER;
     stopGame(gBoard);

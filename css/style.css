@@ -151,6 +151,9 @@ td:link {
 .shown {
   background-color: #e3d23f;
 }
+.bobmb{
+  background-color: rgb(213, 82, 82);
+}
 .safeClick {
   background-color: rgb(228, 225, 225);
 }
