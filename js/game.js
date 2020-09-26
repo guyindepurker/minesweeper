@@ -8,12 +8,12 @@ const NORMAL = "😃";
 const RESTART = "🤪";
 const LOSE = "😭";
 const HEART = "💛";
-const LASTHEART = "💔";
 const GAMEOVER = "❌";
 
 var gBoard;
 var gGame = {
   isOn: false,
+  isFirstClick: true,
   shownCount: 0,
   markedCount: 0,
   secsPassed: 0,
@@ -21,7 +21,7 @@ var gGame = {
 var gLevel = {
   SIZE: 4,
   MINES: 2,
-  LIVES: 1,
+  LIVES: 2,
 };
 var gTimeInterval = null;
 
@@ -35,7 +35,7 @@ function chooseLevel(elBtn) {
     gLevel = {
       SIZE: 4,
       MINES: 2,
-      LIVES: 1,
+      LIVES: 2,
     };
     initGame();
   } else if (text === "Medium") {
@@ -58,7 +58,7 @@ function chooseLevel(elBtn) {
   var numBomb;
   switch (gLevel.MINES) {
     case 2:
-      harts = HEART;
+      harts = HEART + HEART;
       numBomb = 2;
       break;
     case 12:
@@ -84,10 +84,14 @@ function initGame() {
   renderBoard(gBoard);
   gGame = {
     isOn: true,
+    isFirstClick: true,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
   };
+  countMarked();
+  document.querySelector(".victory").style.display = "none";
+  resetTimerHtml();
 }
 
 //Render the Board:
@@ -163,7 +167,7 @@ function countNegs(rowIdx, collJdx) {
 
 //Crate Mines in Random Locations
 function createMines(board, level) {
-  var randomLocations = randomMines(board).slice();
+  var randomLocations = randomEmptyLocations(board).slice();
   for (var i = 0; i < level.MINES; i++) {
     var idx = getRandomInt(0, randomLocations.length);
     var currLocation = randomLocations[idx];
@@ -173,7 +177,7 @@ function createMines(board, level) {
 }
 
 //Random Locations for mines in the board:
-function randomMines(board) {
+function randomEmptyLocations(board) {
   var emptyCellRandom = [];
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[0].length; j++) {
@@ -189,26 +193,24 @@ function randomMines(board) {
 //Cell Clicked:
 function cellClicked(elCell, i, j) {
   if (!gGame.isOn) return;
-  var elLives = document.querySelector(".lives span");
   var currCell = gBoard[i][j];
   var value = EMPTY;
   if (currCell.isShown) return;
   if (currCell.isMarked) return;
-  if (gGame.shownCount === 0 && gGame.isOn) {
+  if (gGame.shownCount === 0 && gGame.isOn && gGame.isFirstClick) {
     gTimeInterval = setInterval(setTime, 100);
+    if (currCell.isMine) {
+      firstClick(gBoard, i, j);
+    }
+    gGame.isFirstClick = false;
   }
   if (currCell.minesAroundCount === 0 && !currCell.isMine) {
     currCell.isShown = true;
     gGame.shownCount++;
     expandShown(gBoard, i, j);
   }
-  //update the dom:
-  elCell.style.backgroundColor = "#e3d23f	";
-
-  ////////////If else conditions!!!//////
-
+  elCell.classList.add("shown"); //update the dom:
   if (!currCell.isMine && currCell.minesAroundCount > 0) {
-    //update the modal:
     currCell.isShown = true;
     value = currCell.minesAroundCount;
     gGame.shownCount++;
@@ -218,16 +220,7 @@ function cellClicked(elCell, i, j) {
     value = MINE;
     //Update the Lives dom and modal!! :
     gLevel.LIVES--;
-    if (gLevel.LIVES === 2) {
-      elLives.innerText = HEART + HEART;
-    } else if (gLevel.LIVES === 1) {
-      elLives.innerText = HEART;
-    } else if (gLevel.LIVES === 0) {
-      elLives.innerText = LASTHEART;
-    } else if (gLevel.LIVES < 0) {
-      elLives.innerText = GAMEOVER;
-      stopGame(gBoard);
-    }
+    lives(i, j, elCell, currCell);
   }
   //update the dom
   renderCell(i, j, value);
@@ -241,11 +234,13 @@ function cellMarked(elCell, i, j, eve) {
   if (currCell.isMarked) {
     currCell.isMarked = false;
     gGame.markedCount--;
+    countMarked();
     elCell.innerText = EMPTY;
   } else if (!currCell.isMarked) {
     currCell.isMarked = true;
     elCell.innerText = FLAG;
     gGame.markedCount++;
+    countMarked();
   }
   eve.preventDefault() === false;
   checkGameOver();
@@ -268,7 +263,7 @@ function expandShown(board, rowIdx, collJdx) {
         value = currCell.minesAroundCount;
       }
 
-      renderCell(i, j, value); //update the dom
+      renderCells(i, j, value); //update the dom
     }
   }
 }
@@ -287,7 +282,30 @@ function checkGameOver() {
   }
 }
 
-//Loose the game and show mine
+//Loose the game
+function lives(i, j, elCell, currCell) {
+  var elLives = document.querySelector(".lives span");
+  if (gLevel.LIVES === 2) {
+    elLives.innerText = HEART + HEART;
+    setTimeout(function () {
+      renderCell(i, j, EMPTY);
+      elCell.classList.remove("shown");
+      currCell.isShown = false;
+      gGame.shownCount--;
+    }, 1000);
+  } else if (gLevel.LIVES === 1) {
+    elLives.innerText = HEART;
+    setTimeout(function () {
+      renderCell(i, j, EMPTY);
+      elCell.classList.remove("shown");
+      currCell.isShown = false;
+      gGame.shownCount--;
+    }, 1000);
+  } else if (gLevel.LIVES <= 0) {
+    elLives.innerText = GAMEOVER;
+    stopGame(gBoard);
+  }
+}
 
 function stopGame(board) {
   for (var i = 0; i < board.length; i++) {
@@ -295,13 +313,37 @@ function stopGame(board) {
       var currCell = board[i][j];
       if (currCell.isMine) {
         currCell.isShown = true;
-        renderCell(i, j, MINE);
+        renderCells(i, j, MINE);
       }
     }
   }
   clearInterval(gTimeInterval);
   gGame.isOn = false;
-  document.querySelector(".smiley").innerText = LOSE;
+  document.querySelector(".smiley").innerText = LOSE; //change the smiley icon
+}
+
+function countMarked() {
+  var elMark = document.querySelector(".marked span");
+  elMark.innerText = gGame.markedCount;
+}
+function resetTimerHtml() {
+  var minutesLabel = document.getElementById("minutes");
+  var secondsLabel = document.getElementById("seconds");
+  secondsLabel.innerHTML = "00";
+  minutesLabel.innerHTML = "00";
+}
+//First Click:
+function firstClick(board, rowIdx, collJdx) {
+  var currCell = board[rowIdx][collJdx];
+  var newRandomPos = randomEmptyLocations(board);
+  var newPosMine = newRandomPos[getRandomInt(0, newRandomPos.length)];
+  var newRow = newPosMine.i;
+  var newColl = newPosMine.j;
+  currCell.isMine = false;
+  board[newRow][newColl].isMine = true;
+  setMinesNegsCount(board);
+  renderBoard(board);
+  renderCellShow(rowIdx, collJdx);
 }
 
 //Restart the Game
@@ -309,7 +351,7 @@ function iconRest(elIcon) {
   var harts;
   switch (gLevel.SIZE) {
     case 4:
-      harts = HEART;
+      harts = HEART + HEART;
       break;
     default:
       harts = HEART + HEART + HEART;

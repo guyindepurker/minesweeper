@@ -4,13 +4,20 @@ function renderCell(locationI, locationJ, value) {
   // Select the elCell and set the value
   var elCell = document.querySelector(`#cell-${locationI}-${locationJ}`);
   elCell.innerText = value;
-  elCell.style.backgroundColor = "#e3d23f"; //change the bgc of the value
 }
-function renderEmptyCell(locationI, locationJ, value){
+
+
+function renderCells(locationI, locationJ, value) {
+  // Select the elCell and set the value
   var elCell = document.querySelector(`#cell-${locationI}-${locationJ}`);
   elCell.innerText = value;
-  elCell.className = "back-empty";
+  elCell.classList.add('shown');
+}
 
+function renderCellShow(locationI, locationJ) {
+  // Select the elCell after the first click and change the bg-color in html
+  var elCell = document.querySelector(`#cell-${locationI}-${locationJ}`);
+  elCell.classList.add('shown');
 }
 
 //Timer:
