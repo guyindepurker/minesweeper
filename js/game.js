@@ -9,7 +9,9 @@ const RESTART = "🤪";
 const LOSE = "😭";
 const HEART = "💛";
 const GAMEOVER = "❌";
+const HINT = "💡";
 
+var gActionsHistory = [];
 var gBoard;
 var gGame;
 var gTimeInterval = null;
@@ -44,6 +46,7 @@ function chooseLevel(elBtn) {
     };
   }
   initGame();
+  document.querySelector(".smiley").innerText = NORMAL; //RESET THE SMILEY
 }
 
 //Starting the Game:
@@ -55,17 +58,19 @@ function initGame() {
   renderBoard(gBoard);
   gGame = {
     isOn: false,
+    isHints: false,
     isFirstClick: true,
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
     safeClick: 3,
+    Hints: 3,
   };
-  gLevel.LIVES = 3;
+  gLevel.SIZE === 4 ? (gLevel.LIVES = 2) : (gLevel.LIVES = 3);
   countMarked();
   countSafeClick();
-  updateHtmInnerText()
-
+  countHint();
+  updateHtmInnerText();
 }
 
 //Render the Board:
@@ -195,12 +200,16 @@ function cellClicked(elCell, i, j) {
     gGame.isFirstClick = false;
   }
   if (!gGame.isOn) return;
+  console.log(gGame.isHints);
+  if (gGame.isHints) hints(gBoard, i, j);
+  console.log(gGame.isHints);
   if (currCell.minesAroundCount === 0 && !currCell.isMine) {
     currCell.isShown = true;
     gGame.shownCount++;
     expandShown(gBoard, i, j);
   }
   elCell.classList.add("shown"); //update the dom:
+  elCell.classList.remove("back-empty");
   if (!currCell.isMine && currCell.minesAroundCount > 0) {
     currCell.isShown = true;
     value = currCell.minesAroundCount;
@@ -214,6 +223,7 @@ function cellClicked(elCell, i, j) {
     lives(i, j, elCell, currCell);
   }
   //update the dom
+  if (!currCell.isMine) actionsHistory(i, j, "cell");
   renderCell(i, j, value);
   checkGameOver();
 }
@@ -226,12 +236,15 @@ function cellMarked(elCell, i, j, eve) {
     currCell.isMarked = false;
     gGame.markedCount--;
     countMarked();
+    gActionsHistory.pop();
+    console.log(gActionsHistory);
     elCell.innerText = EMPTY;
   } else if (!currCell.isMarked) {
     currCell.isMarked = true;
     elCell.innerText = FLAG;
     gGame.markedCount++;
     countMarked();
+    actionsHistory(i, j, "Marked");
   }
   eve.preventDefault() === false;
   checkGameOver();
@@ -252,7 +265,11 @@ function expandShown(board, rowIdx, collJdx) {
       if (currCell.minesAroundCount > 0) {
         value = currCell.minesAroundCount;
       }
-
+      actionsHistory(i, j, "cell");
+      document.getElementById(`cell-${i}-${j}`).classList.remove("back-empty");
+      document
+        .getElementById(`cell-${rowIdx}-${collJdx}`)
+        .classList.remove("back-empty");
       renderCells(i, j, value); //update the dom
     }
   }
@@ -303,6 +320,7 @@ function stopGame(board) {
       if (currCell.isMine) {
         currCell.isShown = true;
         renderCells(i, j, MINE);
+        document.getElementById(`cell-${i}-${j}`).classList.add("bomb");
       }
     }
   }
@@ -310,7 +328,6 @@ function stopGame(board) {
   gGame.isOn = false;
   document.querySelector(".smiley").innerText = LOSE; //change the smiley icon
 }
-
 
 //First Click:
 function firstClick(board, rowIdx, collJdx) {
@@ -325,6 +342,71 @@ function firstClick(board, rowIdx, collJdx) {
   renderBoard(board);
   renderCellShow(rowIdx, collJdx);
 }
+
+//*  BONUS UNDO!    *//
+function actionsHistory(i, j, type) {
+  gActionsHistory.push({ i: i, j: j, type: type });
+  // console.log(gActionsHistory);
+}
+
+function undo() {
+  if (gGame.shownCount === 0 || !gGame.isOn) return;
+  var lastAction = gActionsHistory.pop();
+  if (lastAction.type === "cell") {
+    gBoard[lastAction.i][lastAction.j].isShown = false;
+    gGame.shownCount--;
+  } else if (lastAction.type === "Marked") {
+    gBoard[lastAction.i][lastAction.j].isMarked = false;
+    gGame.markedCount--;
+  }
+  renderCell(lastAction.i, lastAction.j, EMPTY);
+  document
+    .getElementById(`cell-${lastAction.i}-${lastAction.j}`)
+    .classList.add("back-empty");
+}
+
+//* END BONUS UNDO!  *//
+
+//**********/ HINTS BONUS ******//
+function hints(board, rowIdx, collJdx) {
+  expandShown(board, rowIdx, collJdx);
+  setTimeout(function () {
+    expandHide(board, rowIdx, collJdx);
+    gGame.isHints = false;
+    countHint();
+  }, 1000);
+  
+}
+function hintBtn() {
+  if (gGame.Hints === 0) return;
+  gGame.isHints = true;
+  gGame.Hints--;
+  countHint();
+  if (gGame.Hints === 0) gGame.isHints = false;
+}
+
+function expandHide(board, rowIdx, collJdx) {
+  var value = EMPTY;
+  for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+    if (i < 0 || i >= board.length) continue;
+    for (var j = collJdx - 1; j <= collJdx + 1; j++) {
+      if (j < 0 || j >= board[i].length) continue;
+      if (i === rowIdx && j === collJdx) continue;
+      var currCell = board[i][j];
+      gGame.shownCount--; //update the gGame
+      currCell.isShown = false;
+      board[rowIdx][collJdx].isShown = false;
+      gActionsHistory.pop();
+      document.getElementById(`cell-${i}-${j}`).classList.add("back-empty");
+      document
+        .getElementById(`cell-${rowIdx}-${collJdx}`)
+        .classList.add("back-empty");
+      renderCell(i, j, value); //update the dom
+      renderCell(rowIdx, collJdx, value); //update the dom
+    }
+  }
+}
+//********* END HINTS BONUS ********//
 
 //Restart the Game
 function iconRest(elIcon) {
@@ -359,9 +441,19 @@ function updateHtmInnerText() {
   }
   elLives.innerText = harts;
   elBombs.innerText = numBombs;
-  document.querySelector(".smiley").innerText = NORMAL; //RESET THE SMILEY
   document.querySelector(".victory").style.display = "none";
   resetTimerHtml();
+  countHint();
+}
+function countHint() {
+  var elHint = document.querySelector(".hints span");
+  var elBtn = document.querySelector(".hints");
+  elHint.innerText = gGame.Hints + " " + HINT;
+  if (gGame.isHints && gGame.Hints !== 0) {
+    elBtn.classList.add("hint-show");
+  } else {
+    elBtn.classList.remove("hint-show");
+  }
 }
 
 function countMarked() {

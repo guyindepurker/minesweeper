@@ -1,0 +1,219 @@
+/* Html tags */
+body {
+    font-size: 20px;
+    text-align: center;
+    font-family: "Ubuntu", sans-serif;
+    background-color: rgb(250, 250, 210);
+    margin: 0;
+    padding: 0;
+  }
+  hr {
+    border: 0;
+    border-top: 6px dotted #fffcaa;
+    width: 20%;
+  }
+  table {
+    font-family: "Courier New", Courier, monospace;
+    background-color: #ffffe0;
+    margin-top: 350px;
+    margin-bottom: 15%;
+    margin-left: auto;
+    margin-right: auto;
+    border: 1px solid rgb(169, 169, 169);
+  }
+  td {
+    transition-duration: 0.6s;
+    border: 1px solid rgb(162, 162, 162);
+    background-color: #ffffe0;
+    width: 40px;
+    height: 40px;
+  }
+  td:hover {
+    cursor: pointer;
+    background-color: rgb(232, 230, 178);
+  }
+  td:link {
+    background-color: aqua;
+  }
+  /* SELECTOR TAGS */
+  .header {
+    position: fixed;
+    top: 0px;
+    background-color: bisque;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e9e2a3;
+    width: 100%;
+  }
+  .header h1 {
+    color: rgb(79, 75, 53);
+    text-shadow: -1px 0 #555555, 0 1px #555555, 1px 0 #555555, 0 -1px #555555;
+    font-size: 40px;
+    letter-spacing: 5px;
+    font-family: "Fjalla One", sans-serif;
+    font-weight: bolder;
+    margin-top: 10px;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    text-transform: capitalize;
+    margin: 0;
+  }
+  /* BUTTONS  */
+  .header .buttons {
+    font-family: "Ubuntu", sans-serif;
+    font-weight: lighter;
+    transition-duration: 0.4s;
+    margin: 10px;
+    background-color: white;
+    color: #555555;
+    border-color: #555555;
+    border-radius: 12px;
+    font-size: 8px;
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  }
+  .header .buttons:hover {
+    background-color: #555555;
+    color: white;
+    cursor: pointer;
+  }
+  /* SELECTORS HEADER AFTER BUTTONS */
+  .header .main {
+    text-shadow: -1px 0 lightcyan, 0 1px lightcyan, 1px 0 lightcyan,
+      0 -1px lightcyan;
+    font-family: "Courier New", Courier, monospace;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: block;
+  }
+  .timer {
+    text-shadow: none !important;
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    border: 1px solid rgb(129, 130, 125);
+    padding: 5px;
+    font-weight: lighter !important;
+    border-radius: 15px;
+  }
+  .lives {
+    position: relative;
+  }
+  .bombs {
+    display: inline-block;
+  
+    position: absolute;
+    left: 20px;
+  }
+  .smiley {
+    margin-left: 50%;
+    margin-right: 50%;
+    font-size: 30px;
+    margin-bottom: 5px;
+    padding-top: 5px;
+  }
+  .smiley:hover {
+    cursor: pointer;
+  }
+  .lives {
+    padding: 5px;
+  }
+  /* VICTORY GAME */
+  .victory {
+    display: none;
+    padding: 5px;
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 42px;
+    margin-bottom: 5px;
+    font-family: "Open Sans", sans-serif;
+    font-weight: lighter;
+    font-size: 20px;
+    border-radius: 12px;
+    transition-duration: 0.4s;
+    background-color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .victory:hover {
+    cursor: pointer;
+    background-color: #555555;
+    border-color: white;
+    color: white;
+  }
+  .shown {
+    background-color: #e3d23f;
+  }
+  .bobmb{
+    background-color: rgb(213, 82, 82);
+  }
+  .safeClick {
+    background-color: rgb(228, 225, 225);
+  }
+  .safe-click {
+    font-size: 13px !important;
+    background-color: rgb(230, 233, 64) !important;
+    font-weight: bold !important;
+    float: left;
+  }
+  .undo{
+    float: right;
+  }
+  
+  /* FOOTER  */
+  .footer {
+    font-size: 10px;
+    color: #f4efefad;
+    font-weight: 300;
+    background-color: rgb(67 67 62);
+    text-transform: capitalize;
+    letter-spacing: 2px;
+    position: fixed;
+    bottom: 0px;
+    padding: 30px;
+    width: 100%;
+  }
+  .back-empty {
+    background-color: #ffffe0;
+    transition-duration: 0.4s;
+  }
+  
+  .footer a {
+    text-decoration: none;
+    color: #fff;
+    transition-duration: 0.4s;
+  }
+  .footer a:hover {
+    color: #dcd5d5ad;
+    font-size: 15px;
+  }
+  ::selection {
+    background: rgb(228, 225, 118);
+  }
+  /* Responsive Features */
+  @media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+    .main {
+      font-size: 15px;
+      font-weight: 600;
+      display: inline;
+      padding: 3px;
+    }
+    .header {
+      margin-bottom: 10px;
+    }
+    .lives {
+      position: fixed;
+      top: 230px;
+      left: 20px;
+    }
+    .footer {
+      padding: 20px;
+    }
+  }
+  

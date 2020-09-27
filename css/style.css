@@ -1,4 +1,7 @@
 /* Html tags */
+html{
+  height: 100%;
+}
 body {
   font-size: 20px;
   text-align: center;
@@ -6,6 +9,9 @@ body {
   background-color: rgb(250, 250, 210);
   margin: 0;
   padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 hr {
   border: 0;
@@ -15,10 +21,11 @@ hr {
 table {
   font-family: "Courier New", Courier, monospace;
   background-color: #ffffe0;
-  margin-top: 350px;
-  margin-bottom: 15%;
+  /* margin-top: 25px;
+  margin-bottom: 15px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto; */
+  margin: 20px auto;
   border: 1px solid rgb(169, 169, 169);
 }
 td {
@@ -37,7 +44,7 @@ td:link {
 }
 /* SELECTOR TAGS */
 .header {
-  position: fixed;
+  position: sticky;
   top: 0px;
   background-color: bisque;
   margin-bottom: 10px;
@@ -111,10 +118,9 @@ td:link {
   left: 20px;
 }
 .smiley {
-  margin-left: auto;
+  margin-left: 50%;
   margin-right: 50%;
   font-size: 30px;
-  float: right;
   margin-bottom: 5px;
   padding-top: 5px;
 }
@@ -151,8 +157,8 @@ td:link {
 .shown {
   background-color: #e3d23f;
 }
-.bobmb{
-  background-color: rgb(213, 82, 82);
+.bomb{
+  background-color: rgb(232, 78, 78);
 }
 .safeClick {
   background-color: rgb(228, 225, 225);
@@ -163,6 +169,21 @@ td:link {
   font-weight: bold !important;
   float: left;
 }
+.hint-show{
+  background-color: rgb(249, 246, 156) !important;
+  color: white !important;
+}
+.hints{
+  float: right;
+  padding: 1px 3px !important;
+  
+}
+.undo{
+  float: right;
+}
+.game-container{
+  flex:1;
+}
 /* FOOTER  */
 .footer {
   font-size: 10px;
@@ -171,9 +192,8 @@ td:link {
   background-color: rgb(67 67 62);
   text-transform: capitalize;
   letter-spacing: 2px;
-  position: fixed;
-  bottom: 0px;
-  padding: 30px;
+
+  padding: 20px; 
   width: 100%;
 }
 .back-empty {
