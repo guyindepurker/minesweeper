@@ -130,30 +130,7 @@ td:link {
 .lives {
   padding: 5px;
 }
-/* VICTORY GAME */
-.victory {
-  display: none;
-  padding: 5px;
-  width: 20%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 42px;
-  margin-bottom: 5px;
-  font-family: "Open Sans", sans-serif;
-  font-weight: lighter;
-  font-size: 20px;
-  border-radius: 12px;
-  transition-duration: 0.4s;
-  background-color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-.victory:hover {
-  cursor: pointer;
-  background-color: #555555;
-  border-color: white;
-  color: white;
-}
+
 .shown {
   background-color: #e3d23f;
 }
@@ -181,8 +158,36 @@ td:link {
 .undo{
   float: right;
 }
+.back-empty {
+      background-color: #ffffe0;
+      transition-duration: 0.4s;
+    }
 .game-container{
   flex:1;
+}
+/* VICTORY GAME */
+.victory {
+  display: none;
+  padding: 5px;
+  width: 20%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 42px;
+  margin-bottom: 5px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: lighter;
+  font-size: 20px;
+  border-radius: 12px;
+  transition-duration: 0.4s;
+  background-color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.victory:hover {
+  cursor: pointer;
+  background-color: #555555;
+  border-color: white;
+  color: white;
 }
 /* FOOTER  */
 .footer {
@@ -195,10 +200,6 @@ td:link {
 
   padding: 20px; 
   width: 100%;
-}
-.back-empty {
-  background-color: #ffffe0;
-  transition-duration: 0.4s;
 }
 
 .footer a {
@@ -221,13 +222,14 @@ td:link {
     display: inline;
     padding: 3px;
   }
+  
   .header {
     margin-bottom: 10px;
   }
   .lives {
     position: fixed;
     top: 230px;
-    left: 20px;
+    left: 180px;
   }
   .footer {
     padding: 20px;

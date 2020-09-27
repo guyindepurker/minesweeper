@@ -67,6 +67,7 @@ function initGame() {
     Hints: 3,
   };
   gLevel.SIZE === 4 ? (gLevel.LIVES = 2) : (gLevel.LIVES = 3);
+  gActionsHistory = [];
   countMarked();
   countSafeClick();
   countHint();
@@ -143,9 +144,9 @@ function countNegs(rowIdx, collJdx) {
   }
   return count;
 }
-// SAFE CLICK BONUS!!!!!!!!!!
+//***  SAFE CLICK BONUS!!!!!!!!!! ***//
 function showSafeLocation() {
-  if (gGame.safeClick === 0 || !gGame.isOn) return;
+  if (gGame.safeClick === 0) return;
   var randomLocations = randomEmptyLocations(gBoard).slice();
   for (var i = 0; i < gGame.safeClick; i++) {
     var idx = getRandomInt(0, randomLocations.length);
@@ -158,7 +159,7 @@ function showSafeLocation() {
   countSafeClick();
 }
 
-//SAFE CLICK BONUS END!!!!!!!
+//**** SAFE CLICK BONUS END!!!!!!! ***//
 
 //Crate Mines in Random Locations
 function createMines(board, level) {
@@ -200,9 +201,7 @@ function cellClicked(elCell, i, j) {
     gGame.isFirstClick = false;
   }
   if (!gGame.isOn) return;
-  console.log(gGame.isHints);
   if (gGame.isHints) hints(gBoard, i, j);
-  console.log(gGame.isHints);
   if (currCell.minesAroundCount === 0 && !currCell.isMine) {
     currCell.isShown = true;
     gGame.shownCount++;
@@ -229,7 +228,6 @@ function cellClicked(elCell, i, j) {
 }
 
 function cellMarked(elCell, i, j, eve) {
-  if (!gGame.isOn) return;
   var currCell = gBoard[i][j];
   if (currCell.isShown) return;
   if (currCell.isMarked) {
@@ -237,7 +235,6 @@ function cellMarked(elCell, i, j, eve) {
     gGame.markedCount--;
     countMarked();
     gActionsHistory.pop();
-    console.log(gActionsHistory);
     elCell.innerText = EMPTY;
   } else if (!currCell.isMarked) {
     currCell.isMarked = true;
@@ -346,7 +343,6 @@ function firstClick(board, rowIdx, collJdx) {
 //*  BONUS UNDO!    *//
 function actionsHistory(i, j, type) {
   gActionsHistory.push({ i: i, j: j, type: type });
-  // console.log(gActionsHistory);
 }
 
 function undo() {
@@ -384,7 +380,7 @@ function hintBtn() {
   countHint();
   if (gGame.Hints === 0) gGame.isHints = false;
 }
-
+//Hide the open cells function:
 function expandHide(board, rowIdx, collJdx) {
   var value = EMPTY;
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
@@ -398,15 +394,14 @@ function expandHide(board, rowIdx, collJdx) {
       board[rowIdx][collJdx].isShown = false;
       gActionsHistory.pop();
       document.getElementById(`cell-${i}-${j}`).classList.add("back-empty");
-      document
-        .getElementById(`cell-${rowIdx}-${collJdx}`)
-        .classList.add("back-empty");
+      document.getElementById(`cell-${rowIdx}-${collJdx}`).classList.add("back-empty");
       renderCell(i, j, value); //update the dom
-      renderCell(rowIdx, collJdx, value); //update the dom
+      renderCell(rowIdx, collJdx, value); //update the current cell user press to show the other cell
     }
   }
 }
 //********* END HINTS BONUS ********//
+
 
 //Restart the Game
 function iconRest(elIcon) {
