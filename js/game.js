@@ -146,7 +146,7 @@ function countNegs(rowIdx, collJdx) {
 }
 //***  SAFE CLICK BONUS!!!!!!!!!! ***//
 function showSafeLocation() {
-  if (gGame.safeClick === 0) return;
+  if (gGame.safeClick === 0 || !gGame.isOn) return;
   var randomLocations = randomEmptyLocations(gBoard).slice();
   for (var i = 0; i < gGame.safeClick; i++) {
     var idx = getRandomInt(0, randomLocations.length);
@@ -226,7 +226,7 @@ function cellClicked(elCell, i, j) {
   renderCell(i, j, value);
   checkGameOver();
 }
-
+//Cell marked
 function cellMarked(elCell, i, j, eve) {
   var currCell = gBoard[i][j];
   if (currCell.isShown) return;
@@ -247,7 +247,7 @@ function cellMarked(elCell, i, j, eve) {
   checkGameOver();
 }
 
-//Show if the cell is 0 see the others cells around
+// see the others cells around
 function expandShown(board, rowIdx, collJdx) {
   var value = EMPTY;
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
@@ -285,7 +285,7 @@ function checkGameOver() {
   }
 }
 
-//Loose the game and lives
+//Loose the game and count the lives
 function lives(i, j, elCell, currCell) {
   var elLives = document.querySelector(".lives span");
   if (gLevel.LIVES === 2) {
@@ -309,7 +309,7 @@ function lives(i, j, elCell, currCell) {
     stopGame(gBoard);
   }
 }
-
+//show all the mines if lives is end
 function stopGame(board) {
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[i].length; j++) {
@@ -326,7 +326,7 @@ function stopGame(board) {
   document.querySelector(".smiley").innerText = LOSE; //change the smiley icon
 }
 
-//First Click:
+//First Click - no matter what the first click is not  a mine:
 function firstClick(board, rowIdx, collJdx) {
   var currCell = board[rowIdx][collJdx];
   var newRandomPos = randomEmptyLocations(board);
@@ -341,10 +341,11 @@ function firstClick(board, rowIdx, collJdx) {
 }
 
 //*  BONUS UNDO!    *//
+//add all the actions to a array
 function actionsHistory(i, j, type) {
   gActionsHistory.push({ i: i, j: j, type: type });
 }
-
+//button undo take the date from the history action
 function undo() {
   if (gGame.shownCount === 0 || !gGame.isOn) return;
   var lastAction = gActionsHistory.pop();
@@ -364,6 +365,7 @@ function undo() {
 //* END BONUS UNDO!  *//
 
 //**********/ HINTS BONUS ******//
+//the function work when the gGame is.hints true, call to the function in the function CellCliked!:
 function hints(board, rowIdx, collJdx) {
   expandShown(board, rowIdx, collJdx);
   setTimeout(function () {
@@ -374,7 +376,7 @@ function hints(board, rowIdx, collJdx) {
   
 }
 function hintBtn() {
-  if (gGame.Hints === 0) return;
+  if (gGame.Hints === 0 || !gGame.isOn) return;
   gGame.isHints = true;
   gGame.Hints--;
   countHint();

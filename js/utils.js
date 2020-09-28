@@ -29,7 +29,7 @@ function renderSafeClick(locationI, locationJ) {
 
  
 
-//Timer:
+//Timer function:
 function setTime() {
   var minutesLabel = document.getElementById("minutes");
   var secondsLabel = document.getElementById("seconds");
@@ -45,7 +45,7 @@ function strTime(val) {
     return valString;
   }
 }
-
+//random function
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
